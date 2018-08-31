@@ -16,6 +16,7 @@ enum state
   one,
   cero,
   number,
+  coma,
   end
 };
 
@@ -35,7 +36,7 @@ int main(int argc, char const *argv[])
   }
   else
   {
-    printf("Error: Wrong media-range\n");
+    printf("\nError: Wrong media-range\n");
   }
 
   return 0;
@@ -47,9 +48,10 @@ int validateRange(char const *argv)
   int i = 0;
   int state = begin;
 
-  while ((c = argv[i]) != '\0')
+  while (1)
   {
-    printf("\n%c\n", c);
+    c = argv[i];
+    printf("%c", c);
 
     switch (state)
     {
@@ -84,6 +86,7 @@ int validateRange(char const *argv)
       break;
 
     case slash:
+
       if (isalpha(c))
         state = character2;
 
@@ -96,8 +99,10 @@ int validateRange(char const *argv)
       break;
 
     case character2:
-      // Puede terminar, tener en cuenta de guardar el ultimo valor de entrada
-      if (c == ';')
+      if (c == '\0')
+        return 1;
+
+      else if (c == ';')
         state = semicolon;
 
       else if (c == ',')
@@ -110,7 +115,10 @@ int validateRange(char const *argv)
 
     case asterisk2:
       // Puede terminar, tener en cuenta de guardar el ultimo valor de entrada
-      if (c == ';')
+      if (c == '\0')
+        return 1;
+
+      else if (c == ';')
         state = semicolon;
 
       else if (c == ',')
@@ -153,7 +161,10 @@ int validateRange(char const *argv)
 
     case one:
       // Puede terminar, tener en cuenta de guardar el ultimo valor de entrada
-      if (c == ',')
+      if (c == '\0')
+        return 1;
+
+      else if (c == ',')
         state = begin;
 
       else
@@ -161,9 +172,43 @@ int validateRange(char const *argv)
 
       break;
 
-      //case cero:
-    }
+    case cero:
+      if (c == ',')
+      {
+        state = coma;
+      }
+      else
+      {
+        return 0;
+      }
+      break;
 
+    case coma:
+      if (isdigit(c))
+      {
+        state = number;
+      }
+      else
+      {
+        return 0;
+      }
+      break;
+
+    case number:
+      // Puede terminar, tener en cuenta de guardar el ultimo valor de entrada
+      if (c == '\0')
+        return 1;
+
+      else if (c == ',')
+      {
+        state = begin;
+      }
+      else
+      {
+        return 0;
+      }
+      break;
+    }
     i++;
   }
 
