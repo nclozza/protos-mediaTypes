@@ -7,6 +7,8 @@ enum state
   begin,
   character,
   character2,
+  character3,
+  character4,
   asterisk,
   asterisk2,
   slash,
@@ -21,6 +23,7 @@ enum state
 };
 
 int validateRange(char const *argv);
+int validateType();
 
 int main(int argc, char const *argv[])
 {
@@ -37,6 +40,15 @@ int main(int argc, char const *argv[])
   else
   {
     printf("\nError: Wrong media-range\n");
+  }
+
+  if (validateType())
+  {
+    //Continue
+  }
+  else
+  {
+    printf("\nError: Wrong media-type\n");
   }
 
   return 0;
@@ -133,11 +145,8 @@ int validateRange(char const *argv)
       if (c == 'q')
         state = q;
 
-      else
-        return 0;
-
       break;
-
+       
     case q:
       if (c == '=')
         state = equal;
@@ -212,5 +221,92 @@ int validateRange(char const *argv)
     i++;
   }
 
+  return 1;
+}
+
+int validateType()
+{
+  char c;
+  int state = begin;
+
+  while ((c = getchar()) != EOF)
+  {
+    printf("%c", c);
+
+    switch (state)
+    {
+    case begin:
+      if (isalpha(c))
+        state = character;
+
+      else
+        return 0;
+      break;
+
+    case character:
+      if (c == '/')
+        state = slash;
+
+      else if (!isalpha(c))
+        return 0;
+      break;
+
+    case slash:
+      if (isalpha(c))
+        state = character2;
+      
+      else
+        return 0;
+
+      break;
+
+    case character2:
+      if (c == '\n')
+        state = begin;
+
+      else if(c == ';')
+        state = semicolon;
+
+      else if(!isalpha(c))      
+        return 0;
+
+      break;
+
+    case semicolon:
+      if (isalpha(c))
+        state = character3;
+      else
+        return 0;
+
+      break;
+
+    case character3:
+      if (c == '=')
+       state = equal;
+
+      else if (!isalpha(c))
+        return 0;
+
+      break;
+
+    case equal:
+      if (isalpha(c))
+        state = character4;
+
+      else 
+        return 0;
+
+      break;
+
+    case character4:
+      if (c == '\n')
+        state = begin;
+
+      else if(!isalpha(c))                         
+        return 0;
+       
+      break;
+    }
+  }
   return 1;
 }
