@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include "queue.h"
 
 enum state
 {
@@ -19,7 +20,6 @@ enum state
   cero,
   number,
   coma,
-  end
 };
 
 int validateRange(char const *argv);
@@ -32,6 +32,8 @@ int main(int argc, char const *argv[])
     printf("Error: Wrong number of parameters\n");
     return 1;
   }
+
+  newQueue();
 
   if (validateRange(argv[1]))
   {
