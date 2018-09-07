@@ -3,78 +3,96 @@
 #include <string.h>
 #include "queue.h"
 
-struct node
-{
-	char * value;
-	struct node *next;	
-};
 
-struct node *queueFront;
-struct node *queueLast;
-int queueSize;
 
-void newQueue()
+queueADT createQueue()
 {
-	queueFront = NULL;
-	queueLast = NULL;
-	queueSize = 0;
+    queueADT queue = (queueADT)malloc(sizeof(*queue));
+    if (queue == NULL)
+        return NULL;
+    queue->first = NULL;
+    queue->last = NULL;
+
+    return queue;
 }
 
-char* peek()
+void deleteQueue(queueADT queue)
 {
-	return queueFront->value;
-}
-
-char * dequeue()
-{
-	if(isEmpty())
-		return NULL;
-	queueSize--;
-	struct node *aux = queueFront;
-	char * data = aux->value;
-	queueFront = queueFront->next;
-	free(aux);
-	return data;
-}
-
-void enqueue(char * data)
-{	
-	queueSize++;	
-	if(queueFront==NULL)
-	{		
-		queueFront = (struct node *)malloc(sizeof(struct node));
-		queueFront->value = malloc(strlen(data)+1);
-		strcpy(queueFront->value,data);
-		queueFront->value[strlen(data) + 1] = '\0';
-		queueFront->next = NULL;
-		queueLast = queueFront;
-	}
-	else
-	{
-		queueLast->next = (struct node *)malloc(sizeof(struct node));
-		queueLast->value = malloc(strlen(data)+1);
-		strcpy(queueLast->value,data);
-		queueLast->value[strlen(data) + 1] = '\0';
-		queueLast->next->next = NULL;
-		queueLast = queueLast->next;
-	}	
-}
-
-int isEmpty()
-{
-	return queueSize==0;
-}
-
-int sizeQueue()
-{
-	return queueSize;
-}
-
-void printQueue()
-{
-    struct node *aux = queueFront;
-    while(aux->next != NULL){
-        printf("%s\n",aux->value);
-        aux = aux->next;
+    while (!queueIsEmpty(queue))
+    {
+        dequeue(queue);
     }
+
+    free(queue);
+}
+
+int queueIsEmpty(queueADT queue)
+{
+    return queue == NULL || queue->first == NULL;
+}
+
+int enqueue(queueADT queue, queueElement element)
+{
+    if (queue == NULL)
+    {
+        return 0;
+    }
+
+    node *auxNode = (node *)malloc(sizeof(*auxNode));
+    auxNode->element = element;
+    auxNode->next = NULL;
+
+    if (queue->first == NULL)
+    {
+        queue->first = auxNode;
+        queue->last = auxNode;
+    }
+    else
+    {
+        queue->last->next = auxNode;
+        queue->last = auxNode;
+    }
+
+    return 1;
+}
+
+queueElement peek(queueADT queue)
+{
+    if (queueIsEmpty(queue))
+    {
+        return NULL;
+    }
+
+    return queue->first->element;
+}
+
+queueElement dequeue(queueADT queue)
+{
+    if (queueIsEmpty(queue))
+    {
+        return NULL;
+    }
+
+    node *auxFirst = queue->first;
+    queueElement element;
+    element = queue->first->element;
+    queue->first = queue->first->next;
+
+    if (queue->first == NULL)
+    {
+        queue->last = NULL;
+    }
+
+    free(auxFirst);
+    return element;
+}
+
+void printQueue(queueADT queue)
+{
+    node *aux = queue->first;
+    printf("%s\n", aux->element);
+    // while(aux->next != NULL)
+    // {
+    //aux = aux->next;
+    // }
 }
