@@ -20,7 +20,7 @@ enum state
     one,
     cero,
     number,
-    coma,
+    point,
 };
 
 queueADT validateRange(char const *argv)
@@ -38,7 +38,6 @@ queueADT validateRange(char const *argv)
     while (1)
     {
         c = argv[i];
-        printf("%c", c);
 
         switch (state)
         {
@@ -88,9 +87,9 @@ queueADT validateRange(char const *argv)
         case character2:
             if (c == '\0')
             {
-                buffer = malloc(i - j + 1);
+                buffer = malloc((i - j + 1) * sizeof(*buffer));
                 memcpy(buffer, &argv[j], i - j);
-                buffer[i - j + 1] = '\0';
+                buffer[i - j] = '\0';
 
                 if (buffer == NULL || !enqueue(queue, buffer))
                 {
@@ -104,13 +103,10 @@ queueADT validateRange(char const *argv)
             }
 
             else if (c == ';')
-                state = semicolon;
-
-            else if (c == ',')
             {
-                buffer = malloc(i - j + 1);
+                buffer = malloc((i - j + 1) * sizeof(*buffer));
                 memcpy(buffer, &argv[j], i - j);
-                buffer[i - j + 1] = '\0';
+                buffer[i - j] = '\0';
 
                 if (buffer == NULL || !enqueue(queue, buffer))
                 {
@@ -120,7 +116,24 @@ queueADT validateRange(char const *argv)
                     return NULL;
                 }
 
-                i = j;
+                state = semicolon;
+            }
+
+            else if (c == ',')
+            {
+                buffer = malloc((i - j + 1) * sizeof(*buffer));
+                memcpy(buffer, &argv[j], i - j);
+                buffer[i - j] = '\0';
+
+                if (buffer == NULL || !enqueue(queue, buffer))
+                {
+                    deleteQueue(queue);
+                    free(buffer);
+
+                    return NULL;
+                }
+
+                j = i + 1;
 
                 state = begin;
             }
@@ -134,9 +147,9 @@ queueADT validateRange(char const *argv)
             // Puede terminar, tener en cuenta de guardar el ultimo valor de entrada
             if (c == '\0')
             {
-                buffer = malloc(i - j + 1);
+                buffer = malloc((i - j + 1) * sizeof(*buffer));
                 memcpy(buffer, &argv[j], i - j);
-                buffer[i - j + 1] = '\0';
+                buffer[i - j] = '\0';
 
                 if (buffer == NULL || !enqueue(queue, buffer))
                 {
@@ -150,13 +163,10 @@ queueADT validateRange(char const *argv)
             }
 
             else if (c == ';')
-                state = semicolon;
-
-            else if (c == ',')
             {
-                buffer = malloc(i - j + 1);
+                buffer = malloc((i - j + 1) * sizeof(*buffer));
                 memcpy(buffer, &argv[j], i - j);
-                buffer[i - j + 1] = '\0';
+                buffer[i - j] = '\0';
 
                 if (buffer == NULL || !enqueue(queue, buffer))
                 {
@@ -166,7 +176,26 @@ queueADT validateRange(char const *argv)
                     return NULL;
                 }
 
-                i = j;
+                j = i + 1;
+
+                state = semicolon;
+            }
+
+            else if (c == ',')
+            {
+                buffer = malloc((i - j + 1) * sizeof(*buffer));
+                memcpy(buffer, &argv[j], i - j);
+                buffer[i - j] = '\0';
+
+                if (buffer == NULL || !enqueue(queue, buffer))
+                {
+                    deleteQueue(queue);
+                    free(buffer);
+
+                    return NULL;
+                }
+                
+                j = i + 1;
 
                 state = begin;
             }
@@ -206,38 +235,11 @@ queueADT validateRange(char const *argv)
         case one:
             // Puede terminar, tener en cuenta de guardar el ultimo valor de entrada
             if (c == '\0')
-            {
-                buffer = malloc(i - j + 1);
-                memcpy(buffer, &argv[j], i - j);
-                buffer[i - j + 1] = '\0';
-
-                if (buffer == NULL || !enqueue(queue, buffer))
-                {
-                    deleteQueue(queue);
-                    free(buffer);
-
-                    return NULL;
-                }
-
                 return queue;
-            }
 
             else if (c == ',')
             {
-                buffer = malloc(i - j + 1);
-                memcpy(buffer, &argv[j], i - j);
-                buffer[i - j + 1] = '\0';
-
-                if (buffer == NULL || !enqueue(queue, buffer))
-                {
-                    deleteQueue(queue);
-                    free(buffer);
-
-                    return NULL;
-                }
-
-                i = j;
-
+                j = i + 1;
                 state = begin;
             }
 
@@ -247,9 +249,9 @@ queueADT validateRange(char const *argv)
             break;
 
         case cero:
-            if (c == ',')
+            if (c == '.')
             {
-                state = coma;
+                state = point;
             }
             else
             {
@@ -257,7 +259,7 @@ queueADT validateRange(char const *argv)
             }
             break;
 
-        case coma:
+        case point:
             if (isdigit(c))
             {
                 state = number;
@@ -271,37 +273,11 @@ queueADT validateRange(char const *argv)
         case number:
             // Puede terminar, tener en cuenta de guardar el ultimo valor de entrada
             if (c == '\0')
-            {
-                buffer = malloc(i - j + 1);
-                memcpy(buffer, &argv[j], i - j);
-                buffer[i - j + 1] = '\0';
-
-                if (buffer == NULL || !enqueue(queue, buffer))
-                {
-                    deleteQueue(queue);
-                    free(buffer);
-
-                    return NULL;
-                }
-
                 return queue;
-            }
 
             else if (c == ',')
             {
-                buffer = malloc(i - j + 1);
-                memcpy(buffer, &argv[j], i - j);
-                buffer[i - j + 1] = '\0';
-
-                if (buffer == NULL || !enqueue(queue, buffer))
-                {
-                    deleteQueue(queue);
-                    free(buffer);
-
-                    return NULL;
-                }
-
-                i = j;
+                j = i + 1;
 
                 state = begin;
             }

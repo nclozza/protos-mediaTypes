@@ -100,8 +100,10 @@ queueElement dequeue(queueADT queue)
 void printQueue(queueADT queue)
 {
     node *aux = queue->first;
-    while (aux->next != NULL)
+
+    while (aux != NULL)
     {
+        printf("%s\n", aux->element);
         aux = aux->next;
     }
 }
