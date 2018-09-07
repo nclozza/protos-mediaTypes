@@ -3,7 +3,17 @@
 #include <string.h>
 #include "queue.h"
 
+typedef struct node
+{
+    queueElement element;
+    struct node *next;
+} node;
 
+struct queue
+{
+    node *first;
+    node *last;
+};
 
 queueADT createQueue()
 {
@@ -90,9 +100,8 @@ queueElement dequeue(queueADT queue)
 void printQueue(queueADT queue)
 {
     node *aux = queue->first;
-    printf("%s\n", aux->element);
-    // while(aux->next != NULL)
-    // {
-    //aux = aux->next;
-    // }
+    while (aux->next != NULL)
+    {
+        aux = aux->next;
+    }
 }

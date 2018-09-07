@@ -90,17 +90,9 @@ queueADT validateRange(char const *argv)
             {
                 buffer = malloc(i - j + 1);
                 memcpy(buffer, &argv[j], i - j);
-
-                printf("\n%s\n", buffer);
-
                 buffer[i - j + 1] = '\0';
 
-                printf("\n%s\n", buffer);
-
-
-                printf("\nholis\n");
-
-                if (buffer == NULL && !enqueue(queue, buffer))
+                if (buffer == NULL || !enqueue(queue, buffer))
                 {
                     deleteQueue(queue);
                     free(buffer);
@@ -108,7 +100,6 @@ queueADT validateRange(char const *argv)
                     return NULL;
                 }
 
-                printf("\n%s\n", queue->first->element);
                 return queue;
             }
 
@@ -121,7 +112,7 @@ queueADT validateRange(char const *argv)
                 memcpy(buffer, &argv[j], i - j);
                 buffer[i - j + 1] = '\0';
 
-                if (buffer == NULL && !enqueue(queue, buffer))
+                if (buffer == NULL || !enqueue(queue, buffer))
                 {
                     deleteQueue(queue);
                     free(buffer);
@@ -147,7 +138,7 @@ queueADT validateRange(char const *argv)
                 memcpy(buffer, &argv[j], i - j);
                 buffer[i - j + 1] = '\0';
 
-                if (buffer == NULL && !enqueue(queue, buffer))
+                if (buffer == NULL || !enqueue(queue, buffer))
                 {
                     deleteQueue(queue);
                     free(buffer);
@@ -167,7 +158,7 @@ queueADT validateRange(char const *argv)
                 memcpy(buffer, &argv[j], i - j);
                 buffer[i - j + 1] = '\0';
 
-                if (buffer == NULL && !enqueue(queue, buffer))
+                if (buffer == NULL || !enqueue(queue, buffer))
                 {
                     deleteQueue(queue);
                     free(buffer);
@@ -220,7 +211,7 @@ queueADT validateRange(char const *argv)
                 memcpy(buffer, &argv[j], i - j);
                 buffer[i - j + 1] = '\0';
 
-                if (buffer == NULL && !enqueue(queue, buffer))
+                if (buffer == NULL || !enqueue(queue, buffer))
                 {
                     deleteQueue(queue);
                     free(buffer);
@@ -237,7 +228,7 @@ queueADT validateRange(char const *argv)
                 memcpy(buffer, &argv[j], i - j);
                 buffer[i - j + 1] = '\0';
 
-                if (buffer == NULL && !enqueue(queue, buffer))
+                if (buffer == NULL || !enqueue(queue, buffer))
                 {
                     deleteQueue(queue);
                     free(buffer);
@@ -285,7 +276,7 @@ queueADT validateRange(char const *argv)
                 memcpy(buffer, &argv[j], i - j);
                 buffer[i - j + 1] = '\0';
 
-                if (buffer == NULL && !enqueue(queue, buffer))
+                if (buffer == NULL || !enqueue(queue, buffer))
                 {
                     deleteQueue(queue);
                     free(buffer);
@@ -302,7 +293,7 @@ queueADT validateRange(char const *argv)
                 memcpy(buffer, &argv[j], i - j);
                 buffer[i - j + 1] = '\0';
 
-                if (buffer == NULL && !enqueue(queue, buffer))
+                if (buffer == NULL || !enqueue(queue, buffer))
                 {
                     deleteQueue(queue);
                     free(buffer);

@@ -17,7 +17,6 @@ int main(int argc, char const *argv[])
   if (mediaRangeQueue != NULL)
   {
     printf("\n");
-    printf("\nholis\n");
     printQueue(mediaRangeQueue);
     printf("\n");
     //Continue
