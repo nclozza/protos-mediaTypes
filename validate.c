@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include "queue.h"
 #include <string.h>
+#include "validate.h"
 
 enum state
 {
@@ -194,7 +195,7 @@ queueADT validateRange(char const *argv)
 
                     return NULL;
                 }
-                
+
                 j = i + 1;
 
                 state = begin;
@@ -291,89 +292,178 @@ queueADT validateRange(char const *argv)
     }
 }
 
-// int validateType()
-// {
-//     char c;
-//     int state = begin;
+queueADT validateType()
+{
+    char c;
+    int state = begin;
+    char *buffer;
+    queueADT queue = createQueue();
 
-//     while ((c = getchar()) != EOF)
-//     {
-//         printf("%c", c);
+    if (queue == NULL)
+        return NULL;
 
-//         switch (state)
-//         {
-//         case begin:
-//             if (isalpha(c))
-//                 state = character;
+    while ((c = getchar()) != EOF)
+    {
 
-//             else
-//                 return NULL;
-//             break;
+        switch (state)
+        {
+        case begin:
+            if (isalpha(c))
+                state = character;
 
-//         case character:
-//             if (c == '/')
-//                 state = slash;
+            else
+                return NULL;
 
-//             else if (!isalpha(c))
-//                 return NULL;
-//             break;
+            buffer = malloc((sizeof(*buffer)));
+            
+            if (buffer == NULL)
+                return NULL;
 
-//         case slash:
-//             if (isalpha(c))
-//                 state = character2;
+            printf("\n\n\n");
+            printf("adentro begin:%s\n", buffer);
+            printf("en la queue hay:");
+            printQueue(queue);
+            printf("\n");
+            if (!addCharacter(buffer, c))
+            {
+                deleteQueue(queue);
+                free(buffer);
 
-//             else
-//                 return NULL;
+                return NULL;
+            }
 
-//             break;
+            break;
 
-//         case character2:
-//             if (c == '\n')
-//                 state = begin;
+        case character:
+            if (c == '/')
+                state = slash;
 
-//             else if (c == ';')
-//                 state = semicolon;
+            else if (!isalpha(c))
+                return NULL;
 
-//             else if (!isalpha(c))
-//                 return NULL;
+            if (!addCharacter(buffer, c))
+            {
+                deleteQueue(queue);
+                free(buffer);
 
-//             break;
+                return NULL;
+            }
 
-//         case semicolon:
-//             if (isalpha(c))
-//                 state = character3;
-//             else
-//                 return NULL;
+            break;
 
-//             break;
+        case slash:
+            if (isalpha(c))
+                state = character2;
 
-//         case character3:
-//             if (c == '=')
-//                 state = equal;
+            else
+                return NULL;
 
-//             else if (!isalpha(c))
-//                 return NULL;
+            if (!addCharacter(buffer, c))
+            {
+                deleteQueue(queue);
+                free(buffer);
 
-//             break;
+                return NULL;
+            }
 
-//         case equal:
-//             if (isalpha(c))
-//                 state = character4;
+            break;
 
-//             else
-//                 return NULL;
+        case character2:
+            if (c == '\n')
+            {
+                if (!addCharacter(buffer, '\0') || !enqueue(queue, buffer))
+                {
+                    deleteQueue(queue);
+                    free(buffer);
 
-//             break;
+                    return NULL;
+                }
+                printf("adentro character2:%s\n", buffer);
+                printf("en la queue hay:");
+                printQueue(queue);
+                printf("\n");
+                state = begin;
+            }
 
-//         case character4:
-//             if (c == '\n')
-//                 state = begin;
+            else if (c == ';')
+                state = semicolon;
 
-//             else if (!isalpha(c))
-//                 return NULL;
+            else if (!isalpha(c))
+                return NULL;
 
-//             break;
-//         }
-//     }
-//     return 1;
-// }
+            else
+            {
+                if (!addCharacter(buffer, c))
+                {
+                    deleteQueue(queue);
+                    free(buffer);
+
+                    return NULL;
+                }
+            }
+
+            break;
+
+        case semicolon:
+            if (isalpha(c))
+                state = character3;
+            else
+                return NULL;
+
+            break;
+
+        case character3:
+            if (c == '=')
+                state = equal;
+
+            else if (!isalpha(c))
+                return NULL;
+
+            break;
+
+        case equal:
+            if (isalpha(c))
+                state = character4;
+
+            else
+                return NULL;
+
+            break;
+
+        case character4:
+            if (c == '\n')
+            {
+                if (!addCharacter(buffer, '\0') || !enqueue(queue, buffer))
+                {
+                    deleteQueue(queue);
+                    free(buffer);
+
+                    return NULL;
+                }
+                printf("adentro character4:%s\n", buffer);
+                printf("en la queue hay:");
+                printQueue(queue);
+                printf("\n");
+
+                state = begin;
+            }
+
+            else if (!isalpha(c))
+                return NULL;
+
+            break;
+        }
+    }
+}
+
+int addCharacter(char *buffer, char c)
+{
+    void *res = realloc(buffer, (sizeof(*buffer) * strlen(buffer)) + 1);
+
+    if (res == NULL)
+        return 0;
+
+    strcat(buffer, &c);
+
+    return 1;
+}

@@ -25,15 +25,20 @@ int main(int argc, char const *argv[])
   {
     printf("\nError: Wrong media-range\n");
   }
+  
+  queueADT mediaTypesQueue = validateType();
 
-  // if (validateType())
-  // {
-  //   //Continue
-  // }
-  // else
-  // {
-  //   printf("\nError: Wrong media-type\n");
-  // }
+  if (mediaTypesQueue != NULL)
+  {
+    printf("\n");
+    printQueue(mediaTypesQueue);
+    printf("\n");    
+    //Continue
+  }
+  else
+  {
+    printf("\nError: Wrong media-type\n");
+  }
 
   return 0;
 }

@@ -97,6 +97,7 @@ queueElement dequeue(queueADT queue)
     return element;
 }
 
+
 void printQueue(queueADT queue)
 {
     node *aux = queue->first;

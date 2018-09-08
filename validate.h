@@ -3,7 +3,8 @@
 
 #include "queue.h"
 
+int addCharacter(char *buffer, char c);
 queueADT validateRange(char const *argv);
-//int validateType();
+queueADT validateType();
 
 #endif
