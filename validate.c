@@ -339,10 +339,14 @@ queueADT validateType()
                 state = slash;
 
             else if (!isalpha(c))
-            {
-                isNull(queue);
+            {   
+                if(c != '\n')
+                    isNull(queue);
+                else
+                    enqueue(queue, "Null");
                 state = begin;
             }
+
 
             if (!addCharacter(buffer, c))
             {
