@@ -22,6 +22,8 @@ int main(int argc, char const *argv[])
     {
       printf("\n");
       check(mediaRangeQueue, mediaTypesQueue);
+      deleteQueue(mediaRangeQueue);
+      deleteQueue(mediaTypesQueue);
     }
     else
     {
@@ -32,6 +34,7 @@ int main(int argc, char const *argv[])
   {
     printf("\nError: Wrong media-range\n");
   }
+
 
   return 0;
 }
