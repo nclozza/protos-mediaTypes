@@ -319,11 +319,6 @@ queueADT validateType()
             if (buffer == NULL)
                 return NULL;
 
-            printf("\n\n\n");
-            printf("adentro begin:%s\n", buffer);
-            printf("en la queue hay:");
-            printQueue(queue);
-            printf("\n");
             if (!addCharacter(buffer, c))
             {
                 deleteQueue(queue);
@@ -378,10 +373,7 @@ queueADT validateType()
 
                     return NULL;
                 }
-                printf("adentro character2:%s\n", buffer);
-                printf("en la queue hay:");
-                printQueue(queue);
-                printf("\n");
+                
                 state = begin;
             }
 
@@ -440,10 +432,6 @@ queueADT validateType()
 
                     return NULL;
                 }
-                printf("adentro character4:%s\n", buffer);
-                printf("en la queue hay:");
-                printQueue(queue);
-                printf("\n");
 
                 state = begin;
             }
@@ -454,6 +442,7 @@ queueADT validateType()
             break;
         }
     }
+    return queue;
 }
 
 int addCharacter(char *buffer, char c)
