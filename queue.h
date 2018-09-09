@@ -11,5 +11,6 @@ int enqueue(queueADT queue, queueElement element);
 queueElement dequeue(queueADT queue);
 queueElement peek(queueADT queue);
 void printQueue(queueADT queue);
+void check(queueADT mediaRangeQueue, queueADT mediaTypesQueue);
 
 #endif

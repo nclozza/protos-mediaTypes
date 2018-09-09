@@ -97,7 +97,6 @@ queueElement dequeue(queueADT queue)
     return element;
 }
 
-
 void printQueue(queueADT queue)
 {
     node *aux = queue->first;
@@ -106,5 +105,65 @@ void printQueue(queueADT queue)
     {
         printf("%s\n", aux->element);
         aux = aux->next;
+    }
+}
+
+void check(queueADT mediaRangeQueue, queueADT mediaTypesQueue)
+{
+    char *generic = "*/*";
+    int isGeneric = 0;
+    int found;
+    node *rangeNode = mediaRangeQueue->first;
+    node *typesNode = mediaTypesQueue->first;
+
+    while (rangeNode != NULL)
+    {
+        if (strcmp(rangeNode->element, generic) == 0)
+        {
+            isGeneric = 1;
+        }
+        rangeNode = rangeNode->next;
+    }
+
+    if (isGeneric)
+    {
+        while (typesNode != NULL)
+        {
+            if (strcmp(typesNode->element, "Null") == 0)
+                printf("Null\n");
+            else
+                printf("True\n");
+
+            typesNode = typesNode->next;
+        }
+    }
+    else
+    {
+        while (typesNode != NULL)
+        {
+            if (strcmp(typesNode->element, "Null") == 0)
+                printf("Null\n");
+            else
+            {
+                rangeNode = mediaRangeQueue->first;
+                found = 0;
+
+                while (rangeNode != NULL && !found)
+                {
+                    if (strcmp(typesNode->element, rangeNode->element) == 0)
+                        found = 1;
+
+                    else
+                        rangeNode = rangeNode->next;
+                }
+
+                if (found)
+                    printf("True\n");
+                else
+                    printf("False\n");
+            }
+
+            typesNode = typesNode->next;
+        }
     }
 }

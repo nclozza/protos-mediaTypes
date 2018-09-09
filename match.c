@@ -16,30 +16,22 @@ int main(int argc, char const *argv[])
 
   if (mediaRangeQueue != NULL)
   {
-    printf("\n");
-    printQueue(mediaRangeQueue);
-    printf("\n");
-    //Continue
+    queueADT mediaTypesQueue = validateType();
+
+    if (mediaTypesQueue != NULL)
+    {
+      printf("\n");
+      check(mediaRangeQueue, mediaTypesQueue);
+    }
+    else
+    {
+      printf("\nError: Out of memory\n");
+    }
   }
   else
   {
     printf("\nError: Wrong media-range\n");
   }
-  
-  queueADT mediaTypesQueue = validateType();
-
-  if (mediaTypesQueue != NULL)
-  {
-    printf("\n");
-    printQueue(mediaTypesQueue);
-    printf("\n");    
-    //Continue
-  }
-  else
-  {
-    printf("\nError: Wrong media-type\n");
-  }
 
   return 0;
 }
-

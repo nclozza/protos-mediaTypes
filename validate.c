@@ -5,6 +5,8 @@
 #include <string.h>
 #include "validate.h"
 
+#define BLOCK 5
+
 enum state
 {
     begin,
@@ -312,10 +314,13 @@ queueADT validateType()
                 state = character;
 
             else
-                return NULL;
+            {
+                isNull(queue);
+                state = begin;
+            }
 
             buffer = malloc((sizeof(*buffer)));
-            
+
             if (buffer == NULL)
                 return NULL;
 
@@ -334,7 +339,10 @@ queueADT validateType()
                 state = slash;
 
             else if (!isalpha(c))
-                return NULL;
+            {
+                isNull(queue);
+                state = begin;
+            }
 
             if (!addCharacter(buffer, c))
             {
@@ -351,7 +359,10 @@ queueADT validateType()
                 state = character2;
 
             else
-                return NULL;
+            {
+                isNull(queue);
+                state = begin;
+            }
 
             if (!addCharacter(buffer, c))
             {
@@ -373,7 +384,7 @@ queueADT validateType()
 
                     return NULL;
                 }
-                
+
                 state = begin;
             }
 
@@ -381,7 +392,10 @@ queueADT validateType()
                 state = semicolon;
 
             else if (!isalpha(c))
-                return NULL;
+            {
+                isNull(queue);
+                state = begin;
+            }
 
             else
             {
@@ -400,7 +414,10 @@ queueADT validateType()
             if (isalpha(c))
                 state = character3;
             else
-                return NULL;
+            {
+                isNull(queue);
+                state = begin;
+            }
 
             break;
 
@@ -409,7 +426,10 @@ queueADT validateType()
                 state = equal;
 
             else if (!isalpha(c))
-                return NULL;
+            {
+                isNull(queue);
+                state = begin;
+            }
 
             break;
 
@@ -418,7 +438,10 @@ queueADT validateType()
                 state = character4;
 
             else
-                return NULL;
+            {
+                isNull(queue);
+                state = begin;
+            }
 
             break;
 
@@ -437,7 +460,10 @@ queueADT validateType()
             }
 
             else if (!isalpha(c))
-                return NULL;
+            {
+                isNull(queue);
+                state = begin;
+            }
 
             break;
         }
@@ -447,12 +473,27 @@ queueADT validateType()
 
 int addCharacter(char *buffer, char c)
 {
-    void *res = realloc(buffer, (sizeof(*buffer) * strlen(buffer)) + 1);
+    int size = strlen(buffer);
 
-    if (res == NULL)
-        return 0;
+    if (size % 5 == 0)
+    {
+        void *res = realloc(buffer, (sizeof(*buffer) * size) + BLOCK);
+
+        if (res == NULL)
+            return 0;
+    }
 
     strcat(buffer, &c);
 
     return 1;
+}
+
+void isNull(queueADT queue)
+{
+    enqueue(queue, "Null");
+
+    while (getchar() != '\n')
+    {
+        //Consumo lo que queda de esa linea
+    }
 }
