@@ -546,7 +546,6 @@ queueADT validateType()
 
 char *addCharacter(char *buffer, char c, const int bufferLenght)
 {
-    printf("BUFFER LENGHT: %i\n", bufferLenght);
     if ((bufferLenght - 1) % 5 == 0)
     {   
         char *tmp = (char *)realloc(buffer, (sizeof(*buffer) * (bufferLenght - 1)) + BLOCK);
