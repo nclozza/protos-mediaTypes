@@ -3,8 +3,8 @@
 
 #include "queue.h"
 
-void isNull(queueADT queue);
-int addCharacter(char *buffer, char c, const int bufferLenght);
+void isNull(queueADT queue, char *buffer);
+char *addCharacter(char *buffer, char c, const int bufferLenght);
 queueADT validateRange(char const *argv);
 queueADT validateType();
 void check(queueADT mediaRangeQueue, queueADT mediaTypesQueue);

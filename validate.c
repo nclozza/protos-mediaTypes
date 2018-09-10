@@ -6,6 +6,7 @@
 #include "validate.h"
 
 #define BLOCK 5
+#define CLEAR_BUFFER while (getchar() != '\n');
 
 enum state
 {
@@ -106,7 +107,9 @@ queueADT validateRange(char const *argv)
             if (c == '*')
             {
                 emptyQueue(queue);
-                enqueue(queue, "*");
+                char *ast = (char *)malloc(sizeof(char) * 2);
+                strncpy(ast, "*\0", 2);
+                enqueue(queue, ast);
                 state = begin;
             }
 
@@ -121,9 +124,11 @@ queueADT validateRange(char const *argv)
         case character2:
             if (c == '\0')
             {
-                buffer = malloc((i - j + 1) * sizeof(*buffer));
+                buffer = (char *)malloc((i - j + 1) * sizeof(*buffer));
                 memcpy(buffer, &argv[j], i - j);
-                buffer[i - j] = '\0';
+                buffer[i - j] = '\n';
+
+                printf("BUFFER EN TYPE: %s\n", buffer);
 
                 if (buffer == NULL || !enqueue(queue, buffer))
                 {
@@ -138,9 +143,9 @@ queueADT validateRange(char const *argv)
 
             else if (c == ';')
             {
-                buffer = malloc((i - j + 1) * sizeof(*buffer));
+                buffer = (char *)malloc((i - j + 1) * sizeof(*buffer));
                 memcpy(buffer, &argv[j], i - j);
-                buffer[i - j] = '\0';
+                buffer[i - j] = '\n';
 
                 if (buffer == NULL || !enqueue(queue, buffer))
                 {
@@ -155,9 +160,9 @@ queueADT validateRange(char const *argv)
 
             else if (c == ',')
             {
-                buffer = malloc((i - j + 1) * sizeof(*buffer));
+                buffer = (char *)malloc((i - j + 1) * sizeof(*buffer));
                 memcpy(buffer, &argv[j], i - j);
-                buffer[i - j] = '\0';
+                buffer[i - j] = '\n';
 
                 if (buffer == NULL || !enqueue(queue, buffer))
                 {
@@ -184,9 +189,9 @@ queueADT validateRange(char const *argv)
             // Puede terminar, tener en cuenta de guardar el ultimo valor de entrada
             if (c == '\0')
             {
-                buffer = malloc((i - j + 1) * sizeof(*buffer));
+                buffer = (char *)malloc((i - j + 1) * sizeof(*buffer));
                 memcpy(buffer, &argv[j], i - j);
-                buffer[i - j] = '\0';
+                buffer[i - j] = '\n';
 
                 if (buffer == NULL || !enqueue(queue, buffer))
                 {
@@ -201,9 +206,9 @@ queueADT validateRange(char const *argv)
 
             else if (c == ';')
             {
-                buffer = malloc((i - j + 1) * sizeof(*buffer));
+                buffer = (char *)malloc((i - j + 1) * sizeof(*buffer));
                 memcpy(buffer, &argv[j], i - j);
-                buffer[i - j] = '\0';
+                buffer[i - j] = '\n';
 
                 if (buffer == NULL || !enqueue(queue, buffer))
                 {
@@ -220,9 +225,9 @@ queueADT validateRange(char const *argv)
 
             else if (c == ',')
             {
-                buffer = malloc((i - j + 1) * sizeof(*buffer));
+                buffer = (char *)malloc((i - j + 1) * sizeof(*buffer));
                 memcpy(buffer, &argv[j], i - j);
-                buffer[i - j] = '\0';
+                buffer[i - j] = '\n';
 
                 if (buffer == NULL || !enqueue(queue, buffer))
                 {
@@ -351,7 +356,7 @@ queueADT validateRange(char const *argv)
 
 queueADT validateType()
 {
-    int c;
+    char c;
     int bufferLenght = 0;
     int state = begin;
     char *buffer = NULL;
@@ -371,20 +376,15 @@ queueADT validateType()
 
             else
             {
-                isNull(queue);
+                isNull(queue, buffer);
                 state = begin;
             }
 
-            buffer = (char *)malloc((sizeof(*buffer)));
+            buffer = NULL;
             bufferLenght = 1;
 
+            buffer = addCharacter(buffer, c, bufferLenght);
             if (buffer == NULL)
-            {
-                deleteQueue(queue);
-                return NULL;
-            }
-
-            if (!addCharacter(buffer, c, bufferLenght))
             {
                 deleteQueue(queue);
                 free(buffer);
@@ -401,19 +401,21 @@ queueADT validateType()
             else if (!isalpha(c))
             {
                 if (c != '\n')
-                    isNull(queue);
+                    isNull(queue, buffer);
 
                 else
                 {
                     char *null = (char *)malloc(sizeof(char));
                     strncpy(null, "N", 1);
                     enqueue(queue, null);
+                    free(buffer);
                 }
 
                 state = begin;
             }
 
-            if (!addCharacter(buffer, c, bufferLenght))
+            buffer = addCharacter(buffer, c, bufferLenght);
+            if (buffer == NULL)
             {
                 deleteQueue(queue);
                 free(buffer);
@@ -429,11 +431,12 @@ queueADT validateType()
 
             else
             {
-                isNull(queue);
+                isNull(queue, buffer);
                 state = begin;
             }
 
-            if (!addCharacter(buffer, c, bufferLenght))
+            buffer = addCharacter(buffer, c, bufferLenght);
+            if (buffer == NULL)
             {
                 deleteQueue(queue);
                 free(buffer);
@@ -446,7 +449,8 @@ queueADT validateType()
         case character2:
             if (c == '\n')
             {
-                if (/*!addCharacter(buffer, '\0', bufferLenght) || */!enqueue(queue, buffer))
+                buffer = addCharacter(buffer, '\0', bufferLenght);
+                if (buffer == NULL || !enqueue(queue, buffer))
                 {
                     deleteQueue(queue);
                     free(buffer);
@@ -462,19 +466,17 @@ queueADT validateType()
 
             else if (!isalpha(c))
             {
-                isNull(queue);
+                isNull(queue, buffer);
                 state = begin;
             }
 
-            else
+            buffer = addCharacter(buffer, c, bufferLenght);
+            if (buffer == NULL)
             {
-                if (!addCharacter(buffer, c, bufferLenght))
-                {
-                    deleteQueue(queue);
-                    free(buffer);
+                deleteQueue(queue);
+                free(buffer);
 
-                    return NULL;
-                }
+                return NULL;
             }
 
             break;
@@ -484,7 +486,7 @@ queueADT validateType()
                 state = character3;
             else
             {
-                isNull(queue);
+                isNull(queue, buffer);
                 state = begin;
             }
 
@@ -496,7 +498,7 @@ queueADT validateType()
 
             else if (!isalpha(c))
             {
-                isNull(queue);
+                isNull(queue, buffer);
                 state = begin;
             }
 
@@ -508,7 +510,7 @@ queueADT validateType()
 
             else
             {
-                isNull(queue);
+                isNull(queue, buffer);
                 state = begin;
             }
 
@@ -517,7 +519,8 @@ queueADT validateType()
         case character4:
             if (c == '\n')
             {
-                if (/*!addCharacter(buffer, '\0', bufferLenght) || */!enqueue(queue, buffer))
+                buffer = addCharacter(buffer, '\0', bufferLenght);
+                if (buffer == NULL || !enqueue(queue, buffer))
                 {
                     deleteQueue(queue);
                     free(buffer);
@@ -530,58 +533,59 @@ queueADT validateType()
 
             else if (!isalpha(c))
             {
-                isNull(queue);
+                isNull(queue, buffer);
                 state = begin;
             }
 
             break;
         }
     }
+
     return queue;
 }
 
-int addCharacter(char *buffer, char c, const int bufferLenght)
+char *addCharacter(char *buffer, char c, const int bufferLenght)
 {
-    if (bufferLenght % 5 == 0)
-    {
-        buffer = (char *)realloc(buffer, (sizeof(*buffer) * bufferLenght) + BLOCK);
+    printf("BUFFER LENGHT: %i\n", bufferLenght);
+    if ((bufferLenght - 1) % 5 == 0)
+    {   
+        char *tmp = (char *)realloc(buffer, (sizeof(*buffer) * (bufferLenght - 1)) + BLOCK);
 
-        if (buffer == NULL)
-            return 0;
+        if (tmp == NULL)
+        {
+            free(buffer);
+            return NULL;
+        }
 
+        buffer = tmp;
     }
 
     buffer[bufferLenght - 1] = c;
-
-    return 1;
+    return buffer;
 }
 
-void isNull(queueADT queue)
+void isNull(queueADT queue, char *buffer)
 {
-    char *null = (char *)malloc(sizeof(char));
-
-    strncpy(null, "N", 1);
-
+    free(buffer);
+    char *null = (char *)malloc(sizeof(char) * 2);
+    strncpy(null, "N\0", 2);
     enqueue(queue, null);
 
-    while (getchar() != '\n')
-    {
-        //Consumo lo que queda de esa linea
-    }
+    CLEAR_BUFFER
 }
 
 void check(queueADT mediaRangeQueue, queueADT mediaTypesQueue)
 {
-    const char *generic = "*";
+    const char *generic = "*\0";
     int found;
     node *rangeNode = mediaRangeQueue->first;
     node *typesNode = mediaTypesQueue->first;
 
-    if (rangeNode->element == generic)
+    if (strncmp(rangeNode->element, generic, 2) == 0)
     {
         while (typesNode != NULL)
         {
-            if (strcmp(typesNode->element, "N") == 0)
+            if (strcmp(typesNode->element, "N\0") == 0)
                 printf("Null\n");
             else
                 printf("True\n");
@@ -593,7 +597,7 @@ void check(queueADT mediaRangeQueue, queueADT mediaTypesQueue)
     {
         while (typesNode != NULL)
         {
-            if (strcmp(typesNode->element, "N") == 0)
+            if (strcmp(typesNode->element, "N\0") == 0)
                 printf("Null\n");
             else
             {

@@ -13,16 +13,17 @@ int main(int argc, char const *argv[])
   }
 
   queueADT mediaRangeQueue = validateRange(argv[1]);
+  queueADT mediaTypesQueue;
 
   if (mediaRangeQueue != NULL)
   {
-    queueADT mediaTypesQueue = validateType();
+    mediaTypesQueue = validateType();
 
     if (mediaTypesQueue != NULL)
     {
       printf("\n");
       check(mediaRangeQueue, mediaTypesQueue);
-      deleteQueue(mediaRangeQueue);
+
       deleteQueue(mediaTypesQueue);
     }
     else
@@ -35,6 +36,7 @@ int main(int argc, char const *argv[])
     printf("\nError: Wrong media-range\n");
   }
 
+  deleteQueue(mediaRangeQueue);
 
   return 0;
 }
