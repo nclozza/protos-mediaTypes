@@ -6,7 +6,9 @@
 #include "validate.h"
 
 #define BLOCK 5
-#define CLEAR_BUFFER while (getchar() != '\n');
+#define CLEAR_BUFFER          \
+    while (getchar() != '\n') \
+        ;
 
 enum state
 {
@@ -128,8 +130,6 @@ queueADT validateRange(char const *argv)
                 memcpy(buffer, &argv[j], i - j);
                 buffer[i - j] = '\n';
 
-                printf("BUFFER EN TYPE: %s\n", buffer);
-
                 if (buffer == NULL || !enqueue(queue, buffer))
                 {
                     deleteQueue(queue);
@@ -186,7 +186,6 @@ queueADT validateRange(char const *argv)
             break;
 
         case asterisk2:
-            // Puede terminar, tener en cuenta de guardar el ultimo valor de entrada
             if (c == '\0')
             {
                 buffer = (char *)malloc((i - j + 1) * sizeof(*buffer));
@@ -254,6 +253,12 @@ queueADT validateRange(char const *argv)
             if (c == 'q')
                 state = q;
 
+            else
+            {
+                deleteQueue(queue);
+                return NULL;
+            }
+
             break;
 
         case q:
@@ -284,7 +289,6 @@ queueADT validateRange(char const *argv)
             break;
 
         case one:
-            // Puede terminar, tener en cuenta de guardar el ultimo valor de entrada
             if (c == '\0')
                 return queue;
 
@@ -331,7 +335,6 @@ queueADT validateRange(char const *argv)
             break;
 
         case number:
-            // Puede terminar, tener en cuenta de guardar el ultimo valor de entrada
             if (c == '\0')
                 return queue;
 
@@ -371,6 +374,9 @@ queueADT validateType()
         switch (state)
         {
         case begin:
+            buffer = NULL;
+            bufferLenght = 1;
+
             if (isalpha(c))
                 state = character;
 
@@ -379,9 +385,6 @@ queueADT validateType()
                 isNull(queue, buffer);
                 state = begin;
             }
-
-            buffer = NULL;
-            bufferLenght = 1;
 
             buffer = addCharacter(buffer, c, bufferLenght);
             if (buffer == NULL)
@@ -547,7 +550,7 @@ queueADT validateType()
 char *addCharacter(char *buffer, char c, const int bufferLenght)
 {
     if ((bufferLenght - 1) % 5 == 0)
-    {   
+    {
         char *tmp = (char *)realloc(buffer, (sizeof(*buffer) * (bufferLenght - 1)) + BLOCK);
 
         if (tmp == NULL)
@@ -625,7 +628,7 @@ void check(queueADT mediaRangeQueue, queueADT mediaTypesQueue)
 
 int mediaStringCompare(const char *str1, const char *str2)
 {
-    while (*str1 && (*str1 == *str2))
+    while (*str1 && (tolower(*str1) == tolower(*str2)))
     {
         if (*str2 == '/' && *(str2 + 1) == '*')
             return 0;
